@@ -1,0 +1,137 @@
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  transition: background-color 100ms linear, color 40ms linear;
+  /* border: 1px solid black; */
+}
+
+* {
+  padding: 0.2rem;
+  margin: 0;
+  font-family: "Karla", "Courier New", Courier, monospace;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body > div{
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  color: var(--color);
+  background: var(--background);
+}
+.light {
+  --color: #111;
+  --background: #eee;
+  --subsection-background: #ddd;
+  --highlight: #4a9;
+  --link: #000;
+  --link-visted: #636;
+}
+.dark {
+  --color: #cecece;
+  --background: #333;
+  --subsection-background: #444;
+  --highlight: #969;
+  --link: #cecece;
+  --link-visted: #636;
+}
+
+
+.mono {
+  font-family: "Red Hat Mono", "Courier New", Courier, monospace;
+  font-size: 0.85rem;
+  padding: 0.1rem 0px;
+  margin: 0;
+  display: inline-block;
+}
+
+h1 {
+  padding-top: 0.2rem;
+  padding-bottom: 0.5rem;
+}
+
+.container{
+  flex: 0.9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+form {
+  min-width: 26rem;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+form > div {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  font-size: large;
+  display: flex;
+  flex: 1;
+
+  justify-content: space-between;
+}
+div > input, div > select, button {
+  /* flex: 1; */
+  width: 10rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color);
+  padding: 0.3rem;
+}
+input label {
+  margin-right: 2rem;
+}
+
+/* jar holder: two divs, side by side, input and select */
+/* one for new jars, one for existing jars */
+/* both have label, input, button */
+.jar-holder {
+  display: flex;
+  flex-direction: row;
+}
+
+.jar-holder div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input > * {
+  /* background-color: #4a9; */
+  margin: 0.2rem;
+}
+
+.input label{
+  margin-bottom: 0.6rem;
+}
+
+/*  */
+.submit-input {
+  display: flex;
+  justify-content: center;
+}
+
+/* hide all input sections until JS decides to displa */
+.input{
+  /* display: none; */
+}
+.display-on{
+  display: flex;
+}
