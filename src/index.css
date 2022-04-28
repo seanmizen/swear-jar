@@ -70,7 +70,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
+  }
 
 form {
   min-width: 26rem;
@@ -128,10 +128,43 @@ input label {
   justify-content: center;
 }
 
-/* hide all input sections until JS decides to displa */
-.input{
+/* hide all input sections until JS decides to display */
+.stage{
   /* display: none; */
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 100ms linear,opacity 100ms linear;
 }
-.display-on{
+/* .display-on{
   display: flex;
+} */
+
+.name .name-input, .name .nav-buttons{
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 100ms linear,opacity 100ms linear;
+}
+
+.swear .swear-input, .swear .nav-buttons{
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 100ms linear,opacity 100ms linear;
+}
+
+.jar .jar-holder, .jar .nav-buttons{
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 100ms linear,opacity 100ms linear;
+}
+
+.send-swear .swear-input, .send-swear .submit-input{
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 100ms linear,opacity 100ms linear;
+}
+
+.all .stage{
+  visibility: visible;
+  opacity: 1;
+  transition: visibility 100ms linear,opacity 100ms linear;
 }

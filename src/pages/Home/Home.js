@@ -2,7 +2,6 @@
 import { ThemeToggle } from "../../components";
 import { ThemeContext } from "../../Theme";
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { ReactDOM } from "react";
 
 const exampleSwears = [
   "bollock-chops",
@@ -37,7 +36,7 @@ if (initialJarName !== "") {
 
 // Input stages used to display ONLY the fields we want at a time
 // "send swear" will be the default once a user has set themselves up - then it's a "swear + send button" situ
-const inputStages = ["name", "swear", "jar", "send swear", "all"];
+const inputStages = ["name", "swear", "jar", "send-swear", "all"];
 
 function Home() {
   const { mode, toggleMode } = useContext(ThemeContext);
@@ -55,28 +54,27 @@ function Home() {
   useEffect(() => {
     if (formRef === null) return;
 
-    const allInputDivs = formRef.current.getElementsByClassName("input");
-    for (let div in allInputDivs) {
-      // div.classList.remove("display-on");
-    }
-    console.log("allInputDivs", allInputDivs);
-
-    // allInputDivs.classList.remove("test");
+    formRef.current.removeAttribute("class");
+    formRef.current.classList.add(inputStages[inputStageID]);
+    console.log(inputStageID, inputStages[inputStageID]);
 
     switch (inputStages[inputStageID % inputStages.length]) {
       case "name":
-        // formRef.current
-        //   .getElementsByClassName("name-input")
-        //   .classList.add("display-on");
-        // formRef.current
-        //   .getElementsByClassName("nav-buttons")
-        //   .classList.add("display-on");
+        // name-input
+        document.getElementById("name-input").focus();
         break;
       case "swear":
+        // swear-input
+        document.getElementById("swear-input").focus();
+        console.log(document.getElementById("swear-input"));
         break;
       case "jar":
+        // jar-select
+        document.getElementById("jar-select").focus();
         break;
-      case "send swear":
+      case "send-swear":
+        // submit-button
+        document.getElementById("submit-button").focus();
         break;
       default:
       //
@@ -95,24 +93,30 @@ function Home() {
     return;
   };
 
-  const onInputKeyPress = (e) => {
+  const onInputKeyDown = (e) => {
     // handle enters and tabs to move on
     // if key === tab or enter, increment
     // if key === shift+tab, de-increment
-    if (false) {
+    e.preventDefault();
+    if (e.shiftKey && (e.keyCode === 13 || e.keyCode === 9)) {
+      incrementStage(-1);
+    }
+    if (e.keyCode === 13 || e.keyCode === 9) {
+      console.log("pressed!");
       incrementStage(1);
     }
   };
 
-  const jarSelectButton = () => {
-    //
+  const jarSelectButton = (e) => {
+    console.log(e);
+    incrementStage(1);
   };
-  const newJarButton = () => {
-    //
+  const newJarButton = (e) => {
+    console.log(e);
+    incrementStage(1);
   };
 
   const incrementStage = (byThisAmount) => {
-    console.log("hmm");
     setInputStageID((inputStageID + byThisAmount) % inputStages.length);
   };
 
@@ -121,10 +125,12 @@ function Home() {
       <h1 alt="we swear a little too much">
         place your donations to the swear-jar here:
       </h1>
-      <form ref={formRef} onSubmit={onSubmit}>
-        <div className="input name-input">
+      {/* form className will be used to cycle stages */}
+      <form className="name" ref={formRef} onSubmit={onSubmit}>
+        <div className="stage name-input">
           <label>who are you?</label>
           <input
+            onKeyDown={(e) => onInputKeyDown(e)}
             id="name-input"
             type="text"
             name="name-input"
@@ -135,9 +141,10 @@ function Home() {
             }}
           />
         </div>
-        <div className="input swear-input">
+        <div className="stage swear-input">
           <label>what came out of that dirty mouth? &gt;:(</label>
           <input
+            onKeyDown={(e) => onInputKeyDown(e)}
             id="swear-input"
             type="text"
             name="swear-input"
@@ -148,7 +155,7 @@ function Home() {
             }}
           ></input>
         </div>
-        <div className="input jar-holder">
+        <div className="stage jar-holder">
           <div className="jar-input">
             <label>what's the name of your jar?</label>
             <input
@@ -157,6 +164,11 @@ function Home() {
               name="jar-input"
               placeholder={"e.g. 'Sean and Jessie's jar'"}
               value={jarName}
+              onKeyDown={(e) => {
+                if (e.shiftKey && e.keyCode === 9) {
+                  incrementStage(-1);
+                }
+              }}
               onChange={(e) => {
                 setJarName(e.target.value);
               }}
@@ -189,27 +201,23 @@ function Home() {
             </button>
           </div>
         </div>
-        <div className="input submit-input">
+        <div className="stage submit-input">
           <button name="submit-button" id="submit-button" type="submit">
             &gt; 🤬 &gt;
           </button>
         </div>
-        <div className="input nav-buttons">
+        <div className="stage nav-buttons">
           <button
             name="last-button"
             id="last-button"
-            onClick={() =>
-              setInputStageID((inputStageID - 1) % inputStages.length)
-            }
+            onClick={() => incrementStage(-1)}
           >
             &lt; &lt; &lt;
           </button>
           <button
             name="next-button"
             id="next-button"
-            onClick={() =>
-              setInputStageID((inputStageID - 1) % inputStages.length)
-            }
+            onClick={() => incrementStage(1)}
           >
             &gt; &gt; &gt;
           </button>
