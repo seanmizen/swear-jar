@@ -90,14 +90,14 @@ const Home = () => {
         document.getElementById("swear-input").focus();
         break;
       case "new-jar":
-        if (initialJarName !== "" && jarNames.length !== 0) {
+        if (initialJarName !== "" && initialJarNames.length !== 0) {
           setStage("existing-jar");
           break;
         }
         document.getElementById("jar-input").focus();
         break;
       case "existing-jar":
-        if (jarNames.length === 0) {
+        if (initialJarNames.length === 0) {
           // existing-jar is sometimes not displayed
           setStage("existing-jar");
           break;
