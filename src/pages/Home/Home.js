@@ -14,14 +14,21 @@ const exampleSwears = [
   "frak it",
   "aw jeez aw man",
 ];
-
 const exampleSwear =
   exampleSwears[parseInt(Math.random() * exampleSwears.length)];
 
+const taunts = [
+  "what a silly thing to say, [NAME]",
+  "what did you say this time?",
+  "i hope you're happy with yourself, [NAME]",
+  "this is so silly, [NAME].",
+];
+const taunt = taunts[parseInt(Math.random() * taunts.length)];
+
 // Get our localStorage outside of the component
 // re-order once so that our prev. selected item is the default selected jar
-const initialUserName = localStorage.getItem("user-name") || "";
-const initialJarName = localStorage.getItem("jar-name") || "";
+const initialUserName = localStorage.getItem("user-name") || "Sean";
+const initialJarName = localStorage.getItem("jar-name") || "JarJar";
 const initialJarNames = localStorage.getItem("jar-names") || [
   "Community Jar",
   "John's Jar",
@@ -157,11 +164,11 @@ const Home = () => {
       <h1 id="h1" tabIndex={-1} alt="we swear a little too much">
         place your donations to the swear-jar here:
       </h1>
-      {/* form className will be used to cycle stages */}
+      {/* "form "name" will be used to cycle stages" */}
       <form className="name" ref={formRef} onSubmit={onSubmit}>
         <div className="stage taunt-holder">
           <label>
-            <h2>i hope you're happy with yourself, {userName}</h2>
+            <h2>{taunt.replace("[NAME]", userName)}</h2>
           </label>
         </div>
         <div className="stage name-input">
