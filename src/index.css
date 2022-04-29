@@ -86,15 +86,24 @@ form > div {
 
   justify-content: space-around;
 }
-div > input, div > select, button {
+.stage input, .stage select, .stage button {
   /* flex: 1; */
   width: 10rem;
   border-radius: 0.5rem;
   border: 1px solid var(--color);
   padding: 0.3rem;
 }
-input label {
-  margin-right: 2rem;
+.stage input{
+  margin-left: 0.6rem;
+  margin-right: 0.6rem;
+}
+.stage button {
+  height: 2.6rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.jar-holder label{
+  margin-bottom: 0.4rem;
 }
 
 /* jar holder: two divs, side by side, input and select */
@@ -135,8 +144,7 @@ input label {
 
 /* hide all input sections until JS decides to display */
 .stage{
-  /* display: none; */
-  opacity: 0.15;
+  opacity: 0;
   transition: all 200ms ease-in-out;
 }
 
@@ -151,23 +159,34 @@ input label {
   opacity: 1;
 }
 
-.swear .swear-input, .swear .nav-buttons{
-  opacity: 1;
-}
-
-.new-jar .jar-input, .new-jar .jar-holder, .new-jar .nav-buttons{
+.new-jar .jar-input, .new-jar .jar-holder{
   opacity: 1;
 }
 .new-jar .jar-select{
   opacity: 0.5;
 }
+.new-jar .name-input{
+  opacity: 0.15;
+}
 
-.existing-jar .jar-select, .existing-jar .jar-holder, .existing-jar .nav-buttons{
+.existing-jar .jar-select, .existing-jar .jar-holder{
   opacity: 1;
 }
 .existing-jar .jar-input{
   opacity: 0.5;
 }
+.existing-jar .name-input{
+  opacity: 0.15;
+}
+
+
+.swear .swear-input{
+  opacity: 1;
+}
+.swear .name-input, .swear .jar-holder{
+  opacity: 0.15;
+}
+
 
 .send-swear .swear-input, .send-swear .submit-input, .send-swear .nav-buttons{
   opacity: 1;
@@ -189,7 +208,7 @@ input label {
   transform: translate(0rem, -5rem);
 }
 .send-swear .swear-input{
-  transform: translate(0rem, 2rem);
+  transform: translate(0rem, -6rem);
 }
 
 /* Only display the taunt on send-swear */

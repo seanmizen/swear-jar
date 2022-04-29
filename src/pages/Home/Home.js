@@ -29,10 +29,7 @@ const taunt = taunts[parseInt(Math.random() * taunts.length)];
 // re-order once so that our prev. selected item is the default selected jar
 const initialUserName = localStorage.getItem("user-name") || "";
 const initialJarName = localStorage.getItem("jar-name") || "";
-const initialJarNames = localStorage.getItem("jar-names") || [
-  "Community Jar",
-  "John's Jar",
-];
+const initialJarNames = localStorage.getItem("jar-names") || [];
 
 // Shift our initial jarName to the top of the list (add it if it isn't there)
 if (initialJarName !== "") {
@@ -46,17 +43,17 @@ if (initialJarName !== "") {
 // "send swear" will be the default once a user has set themselves up - then it's a "swear + send button" situ
 const inputStages = [
   "name",
-  "swear",
   "new-jar",
   "existing-jar",
+  "swear",
   "send-swear",
   "all",
 ];
 let initialStageID = 0;
 let straightToSubmitScreen = false;
 if (initialJarName !== "" && initialUserName !== "") {
-  initialStageID = inputStages.indexOf("send-swear");
   straightToSubmitScreen = true;
+  initialStageID = inputStages.indexOf("send-swear");
 }
 
 const Home = () => {
@@ -93,12 +90,18 @@ const Home = () => {
         document.getElementById("swear-input").focus();
         break;
       case "new-jar":
-        if (initialJarName !== "") {
+        if (initialJarName !== "" && jarNames.length !== 0) {
           setStage("existing-jar");
+          break;
         }
         document.getElementById("jar-input").focus();
         break;
       case "existing-jar":
+        if (jarNames.length === 0) {
+          // existing-jar is sometimes not displayed
+          setStage("existing-jar");
+          break;
+        }
         // If the user had an earlier jar, use that. If not, direct them to new jar creation
         document.getElementById("jar-select").focus();
         break;
@@ -116,7 +119,6 @@ const Home = () => {
   const onSubmit = (e) => {
     e.preventDefault();
     console.log("Submitting!");
-    // incrementStage(1);
     // TODO submit name to DB
     // if jar doesn't exist, create jar (and await confirmation?)
     if (false) {
@@ -130,32 +132,65 @@ const Home = () => {
     // if key === tab or enter, increment
     // if key === shift+tab, de-increment
 
+    if (e.keyCode === 13 && e.target.id === "swear-input") {
+      if (
+        inputStages[inputStageID] === "all" ||
+        inputStages[inputStageID] === "send-swear"
+      ) {
+        onSubmit(e);
+        return;
+      }
+    }
+
     if (inputStages[inputStageID] === "all") return;
 
     if (e.shiftKey && (e.keyCode === 13 || e.keyCode === 9)) {
       e.preventDefault();
       incrementStage(-1);
     } else if (e.keyCode === 13 || e.keyCode === 9) {
+      e.preventDefault();
       if (e.target.value === "") {
-        e.preventDefault();
       }
       if (
         inputStages[inputStageID] !== "all" &&
         inputStages[inputStageID] !== "send-swear" &&
         e.target.value !== ""
       ) {
-        // e.preventDefault();
         incrementStage(1);
       }
     }
   };
 
+  console.log(jarNames);
+
+  const onNewJarKeyDown = (e) => {
+    if (e.shiftKey && e.keyCode === 9) {
+      incrementStage(-1);
+      return;
+    }
+    if (e.keyCode === 13) {
+      newJarButton(e);
+      return;
+      // e.preventDefault();
+    }
+  };
+  const onSelectJarKeyDown = (e) => {
+    if (e.shiftKey && e.keyCode === 9) {
+      incrementStage(-1);
+      return;
+    }
+    if (e.keyCode === 13) {
+      jarSelectButton(e);
+      return;
+      // e.preventDefault();
+    }
+  };
   const newJarButton = (e) => {
     e.preventDefault();
     if (jarName === "") return;
     setFinalSelectedJar(jarName);
     if (inputStages[inputStageID] !== "all") {
-      setStage("send-swear");
+      setStage("swear");
       // incrementStage(1);
     }
   };
@@ -164,12 +199,11 @@ const Home = () => {
     if (selectedJar === "") return;
     setFinalSelectedJar(selectedJar);
     if (inputStages[inputStageID] !== "all") {
-      setStage("send-swear");
-      // incrementStage(1);
+      setStage("swear");
     }
   };
 
-  const incrementStage = (byThisAmount) => {
+  const incrementStage = (byThisAmount = 1) => {
     setInputStageID(
       (inputStageID + byThisAmount + inputStages.length) % inputStages.length
     );
@@ -188,7 +222,7 @@ const Home = () => {
           </label>
         </div>
         <div className="stage name-input">
-          <label>who are you?</label>
+          <label htmlFor="name-input">who are you?</label>
           <input
             onKeyDown={(e) => onInputKeyDown(e)}
             id="name-input"
@@ -201,8 +235,68 @@ const Home = () => {
             }}
           />
         </div>
+        <div className="stage jar-holder">
+          <div className="jar-input" onFocus={() => setStage("new-jar")}>
+            <label htmlFor="jar-input">what's the name of your jar?</label>
+            <input
+              id="jar-input"
+              type="text"
+              name="jar-input"
+              placeholder="e.g. 'Sean and Jessie's jar'"
+              value={jarName}
+              onKeyDown={(e) => onNewJarKeyDown(e)}
+              onChange={(e) => {
+                setJarName(e.target.value);
+              }}
+            />
+            <button
+              name="new-jar-button"
+              id="new-jar-button"
+              type="button"
+              onClick={(e) => newJarButton(e)}
+            >
+              this new jar
+            </button>
+          </div>
+          {initialJarNames?.length !== 0 ? (
+            <div
+              className="jar-select"
+              onFocus={() => setStage("existing-jar")}
+            >
+              <label htmlFor="jar-select">
+                or are you using a jar which exists?
+              </label>
+              <select
+                name="jar-select"
+                id="jar-select"
+                onKeyDown={(e) => onSelectJarKeyDown(e)}
+                onChange={(e) => setSelectedJar(e.target.value)}
+              >
+                {jarNames?.map((jar, i) => {
+                  return (
+                    <option key={i} value={jar}>
+                      {jar}
+                    </option>
+                  );
+                })}
+              </select>
+              <button
+                name="jar-select-button"
+                id="jar-select-button"
+                type="button"
+                onClick={jarSelectButton}
+              >
+                this jar instead
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
         <div className="stage swear-input">
-          <label>what came out of that dirty mouth? &gt;:(</label>
+          <label htmlFor="swear-input">
+            what came out of that dirty mouth? &gt;:(
+          </label>
           <input
             onKeyDown={(e) => onInputKeyDown(e)}
             id="swear-input"
@@ -215,65 +309,16 @@ const Home = () => {
             }}
           ></input>
         </div>
-        <div className="stage jar-holder">
-          <div className="jar-input" onFocus={() => setStage("new-jar")}>
-            <label>what's the name of your jar?</label>
-            <input
-              id="jar-input"
-              type="text"
-              name="jar-input"
-              placeholder="e.g. 'Sean and Jessie's jar'"
-              value={jarName}
-              onKeyDown={(e) => {
-                if (e.shiftKey && e.keyCode === 9) {
-                  incrementStage(-1);
-                }
-              }}
-              onChange={(e) => {
-                setJarName(e.target.value);
-              }}
-            />
-            <button
-              name="new-jar-button"
-              id="new-jar-button"
-              onClick={newJarButton}
-            >
-              this new jar
-            </button>
-          </div>
-          <div className="jar-select" onFocus={() => setStage("existing-jar")}>
-            <label>or are you using a jar which exists?</label>
-            <select
-              name="jar-select"
-              id="jar-select"
-              onChange={(e) => setSelectedJar(e.target.value)}
-            >
-              {jarNames?.map((jar, i) => {
-                return (
-                  <option key={i} value={jar}>
-                    {jar}
-                  </option>
-                );
-              })}
-            </select>
-            <button
-              name="jar-select-button"
-              id="jar-select-button"
-              onClick={jarSelectButton}
-            >
-              this jar instead
-            </button>
-          </div>
-        </div>
         <div className="stage submit-input">
-          <label>
-            {swear === ""
-              ? "\xa0"
-              : swear + ": straight to " + finalSelectedJar}
+          <label htmlFor="submit-button">
+            {swear || "?"} : straight to {finalSelectedJar}
           </label>
           <button name="submit-button" id="submit-button" type="submit">
             send to the jar 🤬🤬🤬
           </button>
+          <label htmlFor="submit-button">
+            (it doesn't actually donate, it just adds to your swear log 😊)
+          </label>
         </div>
         <div className="stage nav-buttons">
           <button
