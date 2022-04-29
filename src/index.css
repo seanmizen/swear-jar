@@ -86,6 +86,10 @@ form > div {
 
   justify-content: space-around;
 }
+.stage{
+  display: flex;
+  text-align: center;
+}
 .stage input, .stage select, .stage button {
   /* flex: 1; */
   width: 10rem;
@@ -94,11 +98,14 @@ form > div {
   padding: 0.3rem;
 }
 .stage input{
+  height: 1.2rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
   margin-left: 0.6rem;
   margin-right: 0.6rem;
 }
 .stage button {
-  height: 2.6rem;
+  height: 2rem;
   margin-top: 0.6rem;
   margin-bottom: 0.6rem;
 }
@@ -146,6 +153,8 @@ form > div {
 .stage{
   opacity: 0;
   transition: all 200ms ease-in-out;
+  display: flex;
+  align-items: center;
 }
 
 .taunt-holder{
@@ -215,4 +224,10 @@ form > div {
 .send-swear .taunt-holder{
   opacity: 1;
   transform: translate(0rem, 4rem);
+}
+
+#swear-input{
+  padding: 0.6rem 0.2rem;
+  text-align: center;
+  font-size: large;
 }

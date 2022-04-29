@@ -143,7 +143,6 @@ const Home = () => {
     }
 
     if (inputStages[inputStageID] === "all") return;
-
     if (e.shiftKey && (e.keyCode === 13 || e.keyCode === 9)) {
       e.preventDefault();
       incrementStage(-1);
@@ -173,6 +172,9 @@ const Home = () => {
       return;
       // e.preventDefault();
     }
+    if (e.keyCode === 9 && jarName !== "") {
+      incrementStage(2);
+    }
   };
   const onSelectJarKeyDown = (e) => {
     if (e.shiftKey && e.keyCode === 9) {
@@ -183,6 +185,10 @@ const Home = () => {
       jarSelectButton(e);
       return;
       // e.preventDefault();
+    }
+    if (e.keyCode === 9 && selectedJar !== "") {
+      jarSelectButton(e);
+      // incrementStage(1);
     }
   };
   const newJarButton = (e) => {
@@ -221,7 +227,7 @@ const Home = () => {
             <h2>{taunt.replace("[NAME]", userName)}</h2>
           </label>
         </div>
-        <div className="stage name-input">
+        <div className="stage name-input" onFocus={() => setStage("name")}>
           <label htmlFor="name-input">who are you?</label>
           <input
             onKeyDown={(e) => onInputKeyDown(e)}
@@ -237,7 +243,11 @@ const Home = () => {
         </div>
         <div className="stage jar-holder">
           <div className="jar-input" onFocus={() => setStage("new-jar")}>
-            <label htmlFor="jar-input">what's the name of your jar?</label>
+            <label htmlFor="jar-input">
+              your swear jar will need a name.
+              <br />
+              what will it be?
+            </label>
             <input
               id="jar-input"
               type="text"
@@ -249,14 +259,18 @@ const Home = () => {
                 setJarName(e.target.value);
               }}
             />
-            <button
-              name="new-jar-button"
-              id="new-jar-button"
-              type="button"
-              onClick={(e) => newJarButton(e)}
-            >
-              this new jar
-            </button>
+            {initialJarNames?.length !== 0 ? (
+              <button
+                name="new-jar-button"
+                id="new-jar-button"
+                type="button"
+                onClick={(e) => newJarButton(e)}
+              >
+                this new jar
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
           {initialJarNames?.length !== 0 ? (
             <div
@@ -264,6 +278,8 @@ const Home = () => {
               onFocus={() => setStage("existing-jar")}
             >
               <label htmlFor="jar-select">
+                {"\xa0"}
+                <br />
                 or are you using a jar which exists?
               </label>
               <select
@@ -311,7 +327,7 @@ const Home = () => {
         </div>
         <div className="stage submit-input">
           <label htmlFor="submit-button">
-            {swear || "?"} : straight to {finalSelectedJar}
+            {swear || "?"}: straight to your jar, <i>{finalSelectedJar}</i>
           </label>
           <button name="submit-button" id="submit-button" type="submit">
             send to the jar 🤬🤬🤬
