@@ -327,14 +327,16 @@ const Home = () => {
         </div>
         <div className="stage submit-input">
           <label htmlFor="submit-button">
-            {swear || "?"}: straight to your jar, <i>{finalSelectedJar}</i>
+            <b>{swear || "?"}</b>: we'll make a note of it in your jar,{" "}
+            <i>{finalSelectedJar}</i>
+          </label>
+          <label htmlFor="submit-button">
+            (we aren't donating to a jar, but we are adding to your swear log
+            😊)
           </label>
           <button name="submit-button" id="submit-button" type="submit">
             send to the jar 🤬🤬🤬
           </button>
-          <label htmlFor="submit-button">
-            (it doesn't actually donate, it just adds to your swear log 😊)
-          </label>
         </div>
         <div className="stage nav-buttons">
           <button
