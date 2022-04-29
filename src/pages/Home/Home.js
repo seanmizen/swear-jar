@@ -27,8 +27,8 @@ const taunt = taunts[parseInt(Math.random() * taunts.length)];
 
 // Get our localStorage outside of the component
 // re-order once so that our prev. selected item is the default selected jar
-const initialUserName = localStorage.getItem("user-name") || "Sean";
-const initialJarName = localStorage.getItem("jar-name") || "JarJar";
+const initialUserName = localStorage.getItem("user-name") || "";
+const initialJarName = localStorage.getItem("jar-name") || "";
 const initialJarNames = localStorage.getItem("jar-names") || [
   "Community Jar",
   "John's Jar",
@@ -44,7 +44,14 @@ if (initialJarName !== "") {
 
 // Input stages used to display ONLY the fields we want at a time
 // "send swear" will be the default once a user has set themselves up - then it's a "swear + send button" situ
-const inputStages = ["name", "swear", "jar", "send-swear", "all"];
+const inputStages = [
+  "name",
+  "swear",
+  "new-jar",
+  "existing-jar",
+  "send-swear",
+  "all",
+];
 let initialStageID = 0;
 let straightToSubmitScreen = false;
 if (initialJarName !== "" && initialUserName !== "") {
@@ -63,6 +70,12 @@ const Home = () => {
   const [inputStageID, setInputStageID] = useState(initialStageID);
   const formRef = useRef(null);
 
+  const setStage = (stage) => {
+    if (inputStages.includes(stage)) {
+      setInputStageID(inputStages.indexOf(stage));
+    }
+  };
+
   // useEffect to handle auto-focus
   useEffect(() => {
     if (formRef === null) return;
@@ -79,14 +92,15 @@ const Home = () => {
         // swear-input
         document.getElementById("swear-input").focus();
         break;
-      case "jar":
-        // jar-select
-        // If the user had an earlier jar, use that. If not, direct them to new jar creation
-        if (initialJarName === "") {
-          document.getElementById("jar-input").focus();
-        } else {
-          document.getElementById("jar-select").focus();
+      case "new-jar":
+        if (initialJarName !== "") {
+          setStage("existing-jar");
         }
+        document.getElementById("jar-input").focus();
+        break;
+      case "existing-jar":
+        // If the user had an earlier jar, use that. If not, direct them to new jar creation
+        document.getElementById("jar-select").focus();
         break;
       case "send-swear":
         // submit-button
@@ -130,7 +144,7 @@ const Home = () => {
         inputStages[inputStageID] !== "send-swear" &&
         e.target.value !== ""
       ) {
-        e.preventDefault();
+        // e.preventDefault();
         incrementStage(1);
       }
     }
@@ -141,7 +155,8 @@ const Home = () => {
     if (jarName === "") return;
     setFinalSelectedJar(jarName);
     if (inputStages[inputStageID] !== "all") {
-      incrementStage(1);
+      setStage("send-swear");
+      // incrementStage(1);
     }
   };
   const jarSelectButton = (e) => {
@@ -149,7 +164,8 @@ const Home = () => {
     if (selectedJar === "") return;
     setFinalSelectedJar(selectedJar);
     if (inputStages[inputStageID] !== "all") {
-      incrementStage(1);
+      setStage("send-swear");
+      // incrementStage(1);
     }
   };
 
@@ -200,7 +216,7 @@ const Home = () => {
           ></input>
         </div>
         <div className="stage jar-holder">
-          <div className="jar-input">
+          <div className="jar-input" onFocus={() => setStage("new-jar")}>
             <label>what's the name of your jar?</label>
             <input
               id="jar-input"
@@ -225,7 +241,7 @@ const Home = () => {
               this new jar
             </button>
           </div>
-          <div className="jar-select">
+          <div className="jar-select" onFocus={() => setStage("existing-jar")}>
             <label>or are you using a jar which exists?</label>
             <select
               name="jar-select"

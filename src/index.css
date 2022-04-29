@@ -61,7 +61,6 @@ body {
 
 h1 {
   padding-top: 0.2rem;
-  padding-bottom: 0.5rem;
 }
 
 .container{
@@ -156,8 +155,18 @@ input label {
   opacity: 1;
 }
 
-.jar .jar-holder, .jar .nav-buttons{
+.new-jar .jar-input, .new-jar .jar-holder, .new-jar .nav-buttons{
   opacity: 1;
+}
+.new-jar .jar-select{
+  opacity: 0.5;
+}
+
+.existing-jar .jar-select, .existing-jar .jar-holder, .existing-jar .nav-buttons{
+  opacity: 1;
+}
+.existing-jar .jar-input{
+  opacity: 0.5;
 }
 
 .send-swear .swear-input, .send-swear .submit-input, .send-swear .nav-buttons{
