@@ -74,7 +74,6 @@ h1 {
 
 form {
   min-width: 26rem;
-  margin-top: 2rem;
   display: flex;
   flex-direction: column;
 }
@@ -86,7 +85,7 @@ form > div {
   display: flex;
   flex: 1;
 
-  justify-content: space-between;
+  justify-content: space-around;
 }
 div > input, div > select, button {
   /* flex: 1; */
@@ -125,46 +124,67 @@ input label {
 /*  */
 .submit-input {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+}
+
+
+.nav-buttons button {
+  border: 1px solid var(--subsection-background);
 }
 
 /* hide all input sections until JS decides to display */
 .stage{
   /* display: none; */
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 100ms linear,opacity 100ms linear;
+  opacity: 0.15;
+  transition: all 200ms ease-in-out;
 }
-/* .display-on{
-  display: flex;
-} */
 
-.name .name-input, .name .nav-buttons{
-  visibility: visible;
+.taunt-holder{
+  opacity: 0;
+}
+
+.name .stage{
+  opacity: 0;
+}
+.name .name-input{
   opacity: 1;
-  transition: visibility 100ms linear,opacity 100ms linear;
 }
 
 .swear .swear-input, .swear .nav-buttons{
-  visibility: visible;
   opacity: 1;
-  transition: visibility 100ms linear,opacity 100ms linear;
 }
 
 .jar .jar-holder, .jar .nav-buttons{
-  visibility: visible;
   opacity: 1;
-  transition: visibility 100ms linear,opacity 100ms linear;
 }
 
-.send-swear .swear-input, .send-swear .submit-input{
-  visibility: visible;
+.send-swear .swear-input, .send-swear .submit-input, .send-swear .nav-buttons{
   opacity: 1;
-  transition: visibility 100ms linear,opacity 100ms linear;
+}
+.send-swear .name-input, .send-swear .jar-holder, .send-swear .nav-buttons{
+  opacity: 0;
 }
 
 .all .stage{
-  visibility: visible;
   opacity: 1;
-  transition: visibility 100ms linear,opacity 100ms linear;
+}
+/* EXCEPT THE TAUNT HOLDER */
+.all .taunt-holder{
+  opacity: 0;
+}
+
+/* Repositioning */
+.send-swear .submit-input{
+  transform: translate(0rem, -5rem);
+}
+.send-swear .swear-input{
+  transform: translate(0rem, 2rem);
+}
+
+/* Only display the taunt on send-swear */
+.send-swear .taunt-holder{
+  opacity: 1;
+  transform: translate(0rem, 4rem);
 }

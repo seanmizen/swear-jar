@@ -20,10 +20,11 @@ const exampleSwear =
 
 // Get our localStorage outside of the component
 // re-order once so that our prev. selected item is the default selected jar
-const initialJarName = localStorage.getItem("jar-name") || "Jessie's Jar";
+const initialUserName = localStorage.getItem("user-name") || "";
+const initialJarName = localStorage.getItem("jar-name") || "";
 const initialJarNames = localStorage.getItem("jar-names") || [
-  "Sean's Jar",
-  "Jessie's Jar",
+  "Community Jar",
+  "John's Jar",
 ];
 
 // Shift our initial jarName to the top of the list (add it if it isn't there)
@@ -37,26 +38,30 @@ if (initialJarName !== "") {
 // Input stages used to display ONLY the fields we want at a time
 // "send swear" will be the default once a user has set themselves up - then it's a "swear + send button" situ
 const inputStages = ["name", "swear", "jar", "send-swear", "all"];
+let initialStageID = 0;
+let straightToSubmitScreen = false;
+if (initialJarName !== "" && initialUserName !== "") {
+  initialStageID = inputStages.indexOf("send-swear");
+  straightToSubmitScreen = true;
+}
 
-function Home() {
+const Home = () => {
   const { mode, toggleMode } = useContext(ThemeContext);
-  const [userName, setUserName] = useState(
-    localStorage.getItem("user-name") || ""
-  );
-  const [jarName, setJarName] = useState(initialJarName);
+  const [userName, setUserName] = useState(initialUserName);
   const [jarNames, setJarNames] = useState(initialJarNames);
+  const [jarName, setJarName] = useState(initialJarName);
+  const [selectedJar, setSelectedJar] = useState(jarNames[0] || initialJarName);
+  const [finalSelectedJar, setFinalSelectedJar] = useState(initialJarName);
   const [swear, setSwear] = useState(localStorage.getItem("swear") || "");
-  const [inputStageID, setInputStageID] = useState(
-    localStorage.getItem("input-stage-id") || 0
-  );
+  const [inputStageID, setInputStageID] = useState(initialStageID);
   const formRef = useRef(null);
 
+  // useEffect to handle auto-focus
   useEffect(() => {
     if (formRef === null) return;
 
     formRef.current.removeAttribute("class");
     formRef.current.classList.add(inputStages[inputStageID]);
-    console.log(inputStageID, inputStages[inputStageID]);
 
     switch (inputStages[inputStageID % inputStages.length]) {
       case "name":
@@ -66,15 +71,21 @@ function Home() {
       case "swear":
         // swear-input
         document.getElementById("swear-input").focus();
-        console.log(document.getElementById("swear-input"));
         break;
       case "jar":
         // jar-select
-        document.getElementById("jar-select").focus();
+        // If the user had an earlier jar, use that. If not, direct them to new jar creation
+        if (initialJarName === "") {
+          document.getElementById("jar-input").focus();
+        } else {
+          document.getElementById("jar-select").focus();
+        }
         break;
       case "send-swear":
         // submit-button
-        document.getElementById("submit-button").focus();
+        straightToSubmitScreen
+          ? document.getElementById("swear-input").focus()
+          : document.getElementById("submit-button").focus();
         break;
       default:
       //
@@ -84,11 +95,11 @@ function Home() {
   const onSubmit = (e) => {
     e.preventDefault();
     console.log("Submitting!");
+    // incrementStage(1);
     // TODO submit name to DB
     // if jar doesn't exist, create jar (and await confirmation?)
     if (false) {
-      const newJar = "";
-      setJarNames([...jarNames, newJar]);
+      setJarNames([...jarNames, finalSelectedJar]); // ???
     }
     return;
   };
@@ -97,36 +108,62 @@ function Home() {
     // handle enters and tabs to move on
     // if key === tab or enter, increment
     // if key === shift+tab, de-increment
-    e.preventDefault();
+
+    if (inputStages[inputStageID] === "all") return;
+
     if (e.shiftKey && (e.keyCode === 13 || e.keyCode === 9)) {
+      e.preventDefault();
       incrementStage(-1);
+    } else if (e.keyCode === 13 || e.keyCode === 9) {
+      if (e.target.value === "") {
+        e.preventDefault();
+      }
+      if (
+        inputStages[inputStageID] !== "all" &&
+        inputStages[inputStageID] !== "send-swear" &&
+        e.target.value !== ""
+      ) {
+        e.preventDefault();
+        incrementStage(1);
+      }
     }
-    if (e.keyCode === 13 || e.keyCode === 9) {
-      console.log("pressed!");
+  };
+
+  const newJarButton = (e) => {
+    e.preventDefault();
+    if (jarName === "") return;
+    setFinalSelectedJar(jarName);
+    if (inputStages[inputStageID] !== "all") {
+      incrementStage(1);
+    }
+  };
+  const jarSelectButton = (e) => {
+    e.preventDefault();
+    if (selectedJar === "") return;
+    setFinalSelectedJar(selectedJar);
+    if (inputStages[inputStageID] !== "all") {
       incrementStage(1);
     }
   };
 
-  const jarSelectButton = (e) => {
-    console.log(e);
-    incrementStage(1);
-  };
-  const newJarButton = (e) => {
-    console.log(e);
-    incrementStage(1);
-  };
-
   const incrementStage = (byThisAmount) => {
-    setInputStageID((inputStageID + byThisAmount) % inputStages.length);
+    setInputStageID(
+      (inputStageID + byThisAmount + inputStages.length) % inputStages.length
+    );
   };
 
   return (
     <div className={"container"}>
-      <h1 alt="we swear a little too much">
+      <h1 id="h1" tabIndex={-1} alt="we swear a little too much">
         place your donations to the swear-jar here:
       </h1>
       {/* form className will be used to cycle stages */}
       <form className="name" ref={formRef} onSubmit={onSubmit}>
+        <div className="stage taunt-holder">
+          <label>
+            <h2>i hope you're happy with yourself, {userName}</h2>
+          </label>
+        </div>
         <div className="stage name-input">
           <label>who are you?</label>
           <input
@@ -162,7 +199,7 @@ function Home() {
               id="jar-input"
               type="text"
               name="jar-input"
-              placeholder={"e.g. 'Sean and Jessie's jar'"}
+              placeholder="e.g. 'Sean and Jessie's jar'"
               value={jarName}
               onKeyDown={(e) => {
                 if (e.shiftKey && e.keyCode === 9) {
@@ -178,12 +215,16 @@ function Home() {
               id="new-jar-button"
               onClick={newJarButton}
             >
-              this jar
+              this new jar
             </button>
           </div>
           <div className="jar-select">
             <label>or are you using a jar which exists?</label>
-            <select name="jar-select" id="jar-select">
+            <select
+              name="jar-select"
+              id="jar-select"
+              onChange={(e) => setSelectedJar(e.target.value)}
+            >
               {jarNames?.map((jar, i) => {
                 return (
                   <option key={i} value={jar}>
@@ -202,8 +243,13 @@ function Home() {
           </div>
         </div>
         <div className="stage submit-input">
+          <label>
+            {swear === ""
+              ? "\xa0"
+              : swear + ": straight to " + finalSelectedJar}
+          </label>
           <button name="submit-button" id="submit-button" type="submit">
-            &gt; 🤬 &gt;
+            send to the jar 🤬🤬🤬
           </button>
         </div>
         <div className="stage nav-buttons">
@@ -226,6 +272,6 @@ function Home() {
       <ThemeToggle mode={mode} toggleMode={toggleMode} />
     </div>
   );
-}
+};
 
 export default Home;
