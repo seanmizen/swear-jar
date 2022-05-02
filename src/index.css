@@ -40,6 +40,10 @@ body {
   --highlight: #4a9;
   --link: #000;
   --link-visted: #636;
+  --button-color-one: #FF4742;
+  --button-color-two: hsl(2, 100%, 78%);
+  --button-border: #FF4742;
+  --button-text: #eee;
 }
 .dark {
   --color: #cecece;
@@ -48,6 +52,10 @@ body {
   --highlight: #969;
   --link: #cecece;
   --link-visted: #636;
+  --button-color-one: #FF4742;
+  --button-color-two: hsl(2, 100%, 78%);
+  --button-border: #FF4742;
+  --button-text: #eee;
 }
 
 
@@ -90,7 +98,7 @@ form > div {
   display: flex;
   text-align: center;
 }
-.stage input, .stage select, .stage button {
+.stage input, .stage select {
   /* flex: 1; */
   width: 10rem;
   border-radius: 0.5rem;
@@ -105,9 +113,16 @@ form > div {
   margin-right: 0.6rem;
 }
 .stage button {
-  height: 2rem;
+  min-width: 10rem;
+  min-height: 2rem;
+  border-radius: 0.5rem;
   margin-top: 0.6rem;
   margin-bottom: 0.6rem;
+  background-color: var(--button-color-one);
+  border: 1px solid var(--button-border);
+  color: var(--button-text);
+  /* font-size: large; */
+  font-weight: 300;
 }
 .jar-holder label{
   margin-bottom: 0.4rem;
@@ -231,3 +246,22 @@ form > div {
   text-align: center;
   font-size: large;
 }
+
+#submit-button{
+  padding: 1rem 0.4rem;
+}
+
+/* https://www.tutorialspoint.com/css/css_animation_wobble.htm */
+@keyframes wobble {
+  0% { transform: translateX(0%); } 
+  15% { transform: translateX(-25%) rotate(-5deg); } 
+  30% { transform: translateX(20%) rotate(3deg); } 
+  45% { transform: translateX(-15%) rotate(-3deg); } 
+  60% { transform: translateX(10%) rotate(2deg); }
+  75% { transform: translateX(-5%) rotate(-1deg); }
+  100% { transform: translateX(0%); } 
+} 
+
+/* .stage button:hover{
+  animation-name: wobble;
+} */

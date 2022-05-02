@@ -1,4 +1,3 @@
-// import { X, Y, Z } from "../../features";
 import { ThemeToggle } from "../../components";
 import { ThemeContext } from "../../Theme";
 import React, { useState, useContext, useEffect, useRef } from "react";
@@ -31,6 +30,14 @@ const initialUserName = localStorage.getItem("user-name") || "";
 const initialJarName = localStorage.getItem("jar-name") || "";
 const initialJarNames = localStorage.getItem("jar-names") || [];
 
+// const swearJars = {
+//   "Sean and Jessie's Jar": {
+//     name: "",
+//     dateCreated: "",
+//     swears: [{ swear: "Fuck", userName: "Sean", swearDate: "" }],
+//   },
+// };
+
 // Shift our initial jarName to the top of the list (add it if it isn't there)
 if (initialJarName !== "") {
   if (initialJarNames.includes(initialJarName)) {
@@ -56,6 +63,8 @@ if (initialJarName !== "" && initialUserName !== "") {
   initialStageID = inputStages.indexOf("send-swear");
 }
 
+console.log(initialJarNames);
+
 const Home = () => {
   const { mode, toggleMode } = useContext(ThemeContext);
   const [userName, setUserName] = useState(initialUserName);
@@ -67,6 +76,7 @@ const Home = () => {
   const [inputStageID, setInputStageID] = useState(initialStageID);
   const formRef = useRef(null);
 
+  // "Stage" is the stage of user input - name, jarName, swear, etc
   const setStage = (stage) => {
     if (inputStages.includes(stage)) {
       setInputStageID(inputStages.indexOf(stage));
@@ -159,8 +169,6 @@ const Home = () => {
       }
     }
   };
-
-  console.log(jarNames);
 
   const onNewJarKeyDown = (e) => {
     if (e.shiftKey && e.keyCode === 9) {
@@ -266,7 +274,7 @@ const Home = () => {
                 type="button"
                 onClick={(e) => newJarButton(e)}
               >
-                this new jar
+                new jar
               </button>
             ) : (
               <></>
@@ -327,12 +335,11 @@ const Home = () => {
         </div>
         <div className="stage submit-input">
           <label htmlFor="submit-button">
-            <b>{swear || "?"}</b>: we'll make a note of it in your jar,{" "}
+            press this button and we'll make a note of it in your jar,{" "}
             <i>{finalSelectedJar}</i>
           </label>
           <label htmlFor="submit-button">
-            (we aren't donating to a jar, but we are adding to your swear log
-            😊)
+            (we aren't donating money, but we are adding to your swear log 😊)
           </label>
           <button name="submit-button" id="submit-button" type="submit">
             send to the jar 🤬🤬🤬
