@@ -131,11 +131,6 @@ form > div {
 /* jar holder: two divs, side by side, input and select */
 /* one for new jars, one for existing jars */
 /* both have label, input, button */
-.jar-holder {
-  display: flex;
-  flex-direction: row;
-}
-
 .jar-holder div{
   display: flex;
   flex-direction: column;
@@ -159,11 +154,6 @@ form > div {
   align-items: center;
 }
 
-
-.nav-buttons button {
-  border: 1px solid var(--subsection-background);
-}
-
 /* hide all input sections until JS decides to display */
 .stage{
   opacity: 0;
@@ -171,51 +161,54 @@ form > div {
   display: flex;
   align-items: center;
 }
+.jar-holder{
+  align-items: flex-end;
+}
 
 .taunt-holder{
   opacity: 0;
 }
 
-.name .stage{
+.name-stage .stage{
   opacity: 0;
 }
-.name .name-input{
+.name-stage .name-input{
   opacity: 1;
 }
 
-.new-jar .jar-input, .new-jar .jar-holder{
+.jar-input-stage .jar-input, .jar-input-stage .jar-holder{
   opacity: 1;
 }
-.new-jar .jar-select{
-  opacity: 0.5;
+.jar-input-stage .jar-select{
+  opacity: 0.65;
 }
-.new-jar .name-input{
+.jar-input-stage .name-input{
   opacity: 0.15;
 }
 
-.existing-jar .jar-select, .existing-jar .jar-holder{
+.jar-select-stage .jar-select, .jar-select-stage .jar-holder{
   opacity: 1;
 }
-.existing-jar .jar-input{
-  opacity: 0.5;
+.jar-select-stage .jar-input{
+  opacity: 0.65;
 }
-.existing-jar .name-input{
-  opacity: 0.15;
-}
-
-
-.swear .swear-input{
-  opacity: 1;
-}
-.swear .name-input, .swear .jar-holder{
+.jar-select-stage .name-input{
   opacity: 0.15;
 }
 
 
-.send-swear .swear-input, .send-swear .submit-input, .send-swear .nav-buttons{
+.swear-input-stage .swear-input{
   opacity: 1;
 }
-.send-swear .name-input, .send-swear .jar-holder, .send-swear .nav-buttons{
+.swear-input-stage .name-input, .swear-input-stage .jar-holder{
+  opacity: 0.15;
+}
+
+
+.submit-stage .swear-input, .submit-stage .submit-input{
+  opacity: 1;
+}
+.submit-stage .name-input, .submit-stage .jar-holder{
   opacity: 0;
 }
 
@@ -228,17 +221,17 @@ form > div {
 }
 
 /* Repositioning */
-.send-swear .submit-input{
-  transform: translate(0rem, -5rem);
+.submit-stage .submit-input{
+  transform: translate(0rem, -8rem);
 }
-.send-swear .swear-input{
-  transform: translate(0rem, -6rem);
+.submit-stage .swear-input{
+  transform: translate(0rem, -9rem);
 }
 
 /* Only display the taunt on send-swear */
-.send-swear .taunt-holder{
+.submit-stage .taunt-holder{
   opacity: 1;
-  transform: translate(0rem, 4rem);
+  transform: translate(0rem, 2rem);
 }
 
 #swear-input{

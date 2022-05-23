@@ -2,7 +2,7 @@ import "./index.css";
 import { Home } from "./pages";
 import { ThemeProvider } from "./Theme";
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"; // npm install @types/my-package-name
 
 function App() {
   return (

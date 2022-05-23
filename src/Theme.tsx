@@ -6,24 +6,29 @@ const localStorageKey = "mode";
 // accepts system, dark, light.
 
 // Emulate backend calls
-const getMode = () =>
+const getMode = () : Promise<string> =>
   new Promise((res) =>
     setTimeout(() => {
       res(localStorage.getItem(localStorageKey) || "system");
     }, 3000)
   );
-const saveMode = async (mode) => {};
+const saveMode = async (mode: string) => {};
 
 // exposed context for doing awesome things directly in React
 export const ThemeContext = React.createContext({
   mode: "system",
   theme: "light",
-  setMode: () => {},
+  setMode: (() => {}) as (mode: string) => void, // default setMode created
   toggleMode: () => {},
 });
 
+interface Props{
+  // https://stackoverflow.com/questions/53688899/typescript-and-react-children-type
+  children: React.ReactNode,
+}
+
 //React.FunctionComponent
-export const ThemeProvider = ({ children }) => {
+export const ThemeProvider: React.FC<Props> = ({ children }) => { // TODO
   const [mode, setMode] = React.useState(() => {
     const initialMode = localStorage.getItem(localStorageKey) || "system";
     return initialMode;
@@ -31,8 +36,14 @@ export const ThemeProvider = ({ children }) => {
 
   const toggleMode = () => {
     let modes = ["system", "light", "dark"];
-    setMode(modes[(modes.indexOf(mode) + 1) % modes.length]);
+    setMode(modes[(modes.indexOf(mode) + 1) % (modes as unknown as string).length]);
   };
+
+  // gaslighting the compiler:
+  // const b : string = 5 as unknown as string;
+  // (doesn't work)
+  // console.log(typeof(b));
+  // console.log(b.length.toString());
 
   // This will only get called during the 1st render
   React.useState(() => {
@@ -68,7 +79,7 @@ export const ThemeProvider = ({ children }) => {
 
     // As the system value can change, we define an event listener when in system mode
     // to track down its changes
-    const listener = (event) => {
+    const listener = (event: any) => { // TODO undo this
       setTheme(event.matches ? "dark" : "light");
     };
     isSystemInDarkMode.addListener(listener);
@@ -84,7 +95,8 @@ export const ThemeProvider = ({ children }) => {
     document.body.classList.remove("dark");
     document.body.classList.add(theme);
     // change <meta name="color-scheme"> for native inputs
-    document.getElementById("colorScheme").content = theme;
+    // (<HTMLMetaElement>document.getElementById("colorScheme")).content = theme;
+    (document.getElementById("colorScheme") as HTMLMetaElement).content = theme;
   }, [theme]);
 
   return (
